@@ -7,7 +7,7 @@ import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 //Screens
 import HomeScreen from './screens/homescreen';
-import TestScreen from './screens/testscreen';
+import PlacesScreen from './screens/placesscreen';
 
 
 //Auth
@@ -30,30 +30,38 @@ const App = () => {
 
   let handleClickSignOutButton = () => {
     firebase.auth().signOut();
+    setuser(null);
+    setCurrentScreen("homescreen");
   }
 
   //State
   const [currentScreen, setCurrentScreen] = useState("homescreen");
 
-  const [homeButton, setHomeButton] = useState(<a href="#" onClick={handleClickHomeButton}>Home</a>);
+  const [homeButton, setHomeButton] = useState(<button onClick={handleClickHomeButton}>Home</button>);
 
-  const [authButton, setAuthButton] = useState(<a href="#" onClick={handleClickSignInButton}>Sign in</a>);
+  const [authButton, setAuthButton] = useState(<button onClick={handleClickSignInButton}>Sign in</button>);
 
-  const [controlButtons, setControlButtons] = useState(<span></span>);
+  const [controlButtons, setControlButtons] = useState(null);
 
 
   const [authUi, setAuthUi] = useState(null);
+
+  const [user, setuser] = useState(null);
+
+  let controlButtonsContent = <span><button onClick={() => setCurrentScreen("placesscreen")}>Places</button></span>;
 
 
   useEffect(() => {
     const authListener = firebase.auth().onAuthStateChanged(function(user) {
       
       if (user === null) {
-        setControlButtons(<span></span>);
-        setAuthButton(<a href="#" onClick={handleClickSignInButton}>Sign in</a>);
+        setControlButtons(null);
+        setAuthButton(<button onClick={handleClickSignInButton}>Sign in</button>);
       } else {
-        setControlButtons(<span><a href="#" onClick={() => setCurrentScreen("testscreen")}>Test</a></span>);
-        setAuthButton(<a href="#" onClick={handleClickSignOutButton}>Sign out</a>);
+        setuser(user);
+        setControlButtons(controlButtonsContent);
+        setAuthButton(<button onClick={handleClickSignOutButton}>Sign out</button>);
+        setCurrentScreen("placesscreen");
       }
       
     });
@@ -65,8 +73,8 @@ const App = () => {
     case "homescreen":
         currentScreenComponent = <HomeScreen />;
         break;
-    case "testscreen":
-        currentScreenComponent = <TestScreen user="cheese" />;
+    case "placesscreen":
+        currentScreenComponent = <PlacesScreen user={user} />;
         break;
     default:
       currentScreenComponent = <HomeScreen />;
@@ -75,10 +83,10 @@ const App = () => {
   
 
   return (
-  <React.StrictMode>
+  <div>
 
     <div>
-      {homeButton} | {controlButtons} | {authButton}
+      {homeButton} {controlButtons} {authButton}
     </div>
 
     <hr />
@@ -86,7 +94,7 @@ const App = () => {
 
     {authUi}
     
-  </React.StrictMode>
+  </div>
   );
 
 }

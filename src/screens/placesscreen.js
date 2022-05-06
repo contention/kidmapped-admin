@@ -1,26 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../lib/firebase';
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
 
-const TestScreen = (props) => {
+const PlacesScreen = (props) => {
 
-  console.log(props);
+  let placeList = [];
+  const [places, setPlaces] = useState([]);
 
   useEffect(() => {
-
-    console.log('ewewerw');
-
 
         db.collection('places')
         .where('status', '==', 1)
         .get()
         .then(function(querySnapshot) {
             querySnapshot.forEach(function(doc) {
-                let place = doc.data();
-                console.log(place);
+                let place = {}
+                place.data = doc.data();
+                place.id = doc.id;
+                placeList.push(place);
             });
             
+        }).then(function(){
+          setPlaces(placeList);
+          console.log(placeList);
         })
         .catch(error => {
             //Nothing found
@@ -37,9 +38,15 @@ const TestScreen = (props) => {
 
   return (
     <div className="test">
-      Test screen. {props.user}
+      Places screen. 
+
+      <ul>
+      {places.map(function(p, i){
+         return (<li key={i}>{p.data.name}</li>)
+       })}
+      </ul>
     </div>
   );
 }
 
-export default TestScreen;
+export default PlacesScreen;

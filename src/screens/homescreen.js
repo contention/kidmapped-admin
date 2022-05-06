@@ -4,8 +4,8 @@ import { db } from '../lib/firebase';
 const HomeScreen = (props) => {
 
   return (
-    <div className="home">
-      Home screen.
+    <div>
+      <h1>Home</h1>
     </div>
   );
 }

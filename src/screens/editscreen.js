@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../lib/firebase';
 
-const PlacesScreen = (props) => {
+const EditScreen = (props) => {
 
-  let placeList = [];
-  const [places, setPlaces] = useState([]);
+  const [place, setPlace] = useState(null);
 
   useEffect(() => {
 
@@ -16,12 +15,10 @@ const PlacesScreen = (props) => {
                 let place = {}
                 place.data = doc.data();
                 place.id = doc.id;
-                placeList.push(place);
             });
             
         }).then(function(){
-          setPlaces(placeList);
-          console.log(placeList);
+          
         })
         .catch(error => {
             //Nothing found
@@ -38,16 +35,9 @@ const PlacesScreen = (props) => {
 
   return (
     <div>
-      <h1>Places</h1> 
-
-      <h2>New places</h2>
-      <ul>
-      {places.map(function(p, i){
-         return (<li key={i}>{p.data.name}</li>)
-       })}
-      </ul>
+      <h1>Edit</h1>
     </div>
   );
 }
 
-export default PlacesScreen;
+export default EditScreen;

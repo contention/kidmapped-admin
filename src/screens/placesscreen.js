@@ -17,8 +17,8 @@ const PlacesScreen = (props) => {
     
   }
 
-  let showPlaceEditPanel = (place, hidePlaceEditPanel) => {
-    setPlaceEditPanel(<PlaceEditPanel place={place} />);
+  let showPlaceEditPanel = (place, user, hidePlaceEditPanel) => {
+    setPlaceEditPanel(<PlaceEditPanel place={place} user={user}/>);
     setPlaceEditPanelCloseButton(<button onClick={closePlaceEditPanel}>Close</button>);
   }
 
@@ -72,10 +72,10 @@ const PlacesScreen = (props) => {
 
       <h1>Places</h1> 
 
-      <h2>New places</h2>
+      <h2>New</h2>
       <ul>
       {places.map(function(place, i){
-         return (<PlaceListItem key={i} place={place} showPlaceEditPanel={showPlaceEditPanel} />)
+         return (<PlaceListItem key={i} place={place} user={props.user} showPlaceEditPanel={showPlaceEditPanel} />)
        })}
       </ul>
     </div>

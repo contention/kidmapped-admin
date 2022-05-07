@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 const PlaceListItem = (props) => {
   return (
     <li>
-      {props.place.data.name} <button onClick={() => props.showPlaceEditPanel(props.place, props.hidePlaceEditPanel)}>Edit</button>
+      {props.place.data.name} <button onClick={() => props.showPlaceEditPanel(props.place, props.user, props.hidePlaceEditPanel)}>Edit</button>
     </li>
   );
 }

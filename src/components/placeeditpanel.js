@@ -6,16 +6,23 @@ import { db } from '../lib/firebase';
 
 const PlaceEditPanel = (props) => {
 
-  const [placeData, setPlaceData] = useState(props.place.data);
+  let initialplaceData = props.place.data;
+  initialplaceData.uid = props.user.uid;
+  const [placeData, setPlaceData] = useState(initialplaceData);
   
 
   const handleChange = (e) => {
     setPlaceData({...placeData, [e.target.name] : e.target.value })
   }
 
-  const handleSave = (e) => {
+  const handleSave = async(e) => {
+    console.log('data to save:', placeData);
     e.preventDefault();
-    console.log(placeData);
+    await db.collection('places').doc(props.place.id).set(placeData)
+    .catch(error => {
+        console.log(error);
+    });
+
   }
 
   //Get place
@@ -42,7 +49,7 @@ const PlaceEditPanel = (props) => {
 
   return (
     <div>
-      Place Edit Panel ({props.place.id})
+      <h1>Edit</h1>
 
       <form onSubmit={handleSave}>
         <label>Name:
@@ -66,7 +73,10 @@ const PlaceEditPanel = (props) => {
 
       </form>
 
+      <hr />
+
     </div>
+
   );
 }
 

@@ -1,14 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../lib/firebase';
 
+import PlaceListItem from '../components/placelistitem';
+import PlaceEditPanel from '../components/placeeditpanel';
+
 const PlacesScreen = (props) => {
 
+
+  //Place Edit Panel
+  const [placeEditPanel, setPlaceEditPanel] = useState(null);
+  const [placeEditPanelCloseButton, setPlaceEditPanelCloseButton] = useState(null);
+
+  let closePlaceEditPanel = () => {
+    setPlaceEditPanel(null);
+    setPlaceEditPanelCloseButton(null)
+    
+  }
+
+  let showPlaceEditPanel = (id, hidePlaceEditPanel) => {
+    setPlaceEditPanel(<PlaceEditPanel id={id} />);
+    setPlaceEditPanelCloseButton(<button onClick={closePlaceEditPanel}>Close</button>);
+  }
+
+  
+   
+  //Places
   let placeList = [];
   const [places, setPlaces] = useState([]);
 
-  useEffect(() => {
 
-        db.collection('places')
+  //Get new place
+  let getNewPlaces = () => {
+    db.collection('places')
         .where('status', '==', 1)
         .get()
         .then(function(querySnapshot) {
@@ -21,7 +44,6 @@ const PlacesScreen = (props) => {
             
         }).then(function(){
           setPlaces(placeList);
-          console.log(placeList);
         })
         .catch(error => {
             //Nothing found
@@ -29,21 +51,38 @@ const PlacesScreen = (props) => {
             //Show message popup
             console.log('Error - ' + error.message);
         })
-      
+  }
 
+
+  //Get all sections
+  let getAll = () => {
+    getNewPlaces();
+  }
+
+
+  //On mount
+  useEffect(() => {
+    getAll();
   }, []);
 
-  
+
 
 
   return (
     <div>
+
+      <div>
+      {placeEditPanelCloseButton}
+      {placeEditPanel}
+      </div>
+
+
       <h1>Places</h1> 
 
       <h2>New places</h2>
       <ul>
       {places.map(function(p, i){
-         return (<li key={i}>{p.data.name}</li>)
+         return (<PlaceListItem key={i} place={p} showPlaceEditPanel={showPlaceEditPanel} />)
        })}
       </ul>
     </div>

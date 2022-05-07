@@ -17,8 +17,8 @@ const PlacesScreen = (props) => {
     
   }
 
-  let showPlaceEditPanel = (id, hidePlaceEditPanel) => {
-    setPlaceEditPanel(<PlaceEditPanel id={id} />);
+  let showPlaceEditPanel = (place, hidePlaceEditPanel) => {
+    setPlaceEditPanel(<PlaceEditPanel place={place} />);
     setPlaceEditPanelCloseButton(<button onClick={closePlaceEditPanel}>Close</button>);
   }
 
@@ -74,8 +74,8 @@ const PlacesScreen = (props) => {
 
       <h2>New places</h2>
       <ul>
-      {places.map(function(p, i){
-         return (<PlaceListItem key={i} place={p} showPlaceEditPanel={showPlaceEditPanel} />)
+      {places.map(function(place, i){
+         return (<PlaceListItem key={i} place={place} showPlaceEditPanel={showPlaceEditPanel} />)
        })}
       </ul>
     </div>

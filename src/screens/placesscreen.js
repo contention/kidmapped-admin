@@ -30,27 +30,20 @@ const PlacesScreen = (props) => {
 
 
   //Get new place
-  let getNewPlaces = () => {
-    db.collection('places')
-        .where('status', '==', 1)
-        .get()
-        .then(function(querySnapshot) {
-            querySnapshot.forEach(function(doc) {
-                let place = {}
-                place.data = doc.data();
-                place.id = doc.id;
-                placeList.push(place);
-            });
-            
-        }).then(function(){
-          setPlaces(placeList);
-        })
-        .catch(error => {
-            //Nothing found
-
-            //Show message popup
-            console.log('Error - ' + error.message);
-        })
+  let getNewPlaces = async() => {
+    const placesRef = db.collection('places');
+    const snapshot = await placesRef.where('status', '==', 1).get();
+    if (snapshot.empty) {
+      console.log('No matching documents.');
+      return;
+    }
+    snapshot.forEach(doc => {
+      let place = {}
+      place.data = doc.data();
+      place.id = doc.id;
+      placeList.push(place);
+    });
+    setPlaces(placeList);
   }
 
 

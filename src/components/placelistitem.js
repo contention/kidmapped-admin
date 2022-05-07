@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 
 const PlaceListItem = (props) => {
   return (
-    <li>
-      {props.place.data.name} <button onClick={() => props.showPlaceEditPanel(props.place, props.user, props.hidePlaceEditPanel)}>Edit</button>
-    </li>
+    <div>
+      <strong>{props.place.data.name}</strong> <small>{props.place.data.description}</small>
+    </div>
   );
 }
 

@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../lib/firebase';
 
 import PlaceListItem from '../components/placelistitem';
-import PlaceEditPanel from '../components/placeeditpanel';
+import PlaceEditPanel from './editscreen';
 
 const PlacesScreen = (props) => {
+
+  console.log('placesscreen', props);
 
 
   //Place Edit Panel
@@ -75,7 +77,12 @@ const PlacesScreen = (props) => {
       <h2>New</h2>
       <ul>
       {places.map(function(place, i){
-         return (<PlaceListItem key={i} place={place} user={props.user} showPlaceEditPanel={showPlaceEditPanel} />)
+         return (
+          <li key={i} >
+          <PlaceListItem place={place} user={props.user} handleClickEditButton={props.handleClickEditButton} />
+          <button onClick={() => props.handleClickEditButton(place)}>Edit</button>
+          </li>
+         )
        })}
       </ul>
     </div>

@@ -8,6 +8,7 @@ import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 //Screens
 import HomeScreen from './screens/homescreen';
 import PlacesScreen from './screens/placesscreen';
+import EditScreen from './screens/editscreen';
 
 
 //Auth
@@ -22,7 +23,15 @@ const uiConfig = {
 const App = () => {
 
   let handleClickHomeButton = () => {
-    setCurrentScreen("homescreen");
+    setCurrentScreen(<HomeScreen />);
+  }
+
+  let handleClickEditButton = (place) => {
+    setCurrentScreen(<EditScreen place={place} />);
+  }
+
+  let handleClickPlacesButton = () => {
+    setCurrentScreen(<PlacesScreen handleClickEditButton={handleClickEditButton} />);
   }
 
   let handleClickSignInButton = () => {
@@ -32,7 +41,7 @@ const App = () => {
   let handleClickSignOutButton = () => {
     firebase.auth().signOut();
     setuser(null);
-    setCurrentScreen("homescreen");
+    setCurrentScreen(<HomeScreen />);
   }
 
   //State
@@ -44,12 +53,14 @@ const App = () => {
 
   const [controlButtons, setControlButtons] = useState(null);
 
-
   const [authUi, setAuthUi] = useState(null);
 
   const [user, setuser] = useState(null);
 
-  let controlButtonsContent = <span><button onClick={() => setCurrentScreen("placesscreen")}>Places</button></span>;
+  let controlButtonsContent = 
+      <span>
+        <button onClick={handleClickPlacesButton}>Places</button>
+      </span>;
 
 
   useEffect(() => {
@@ -62,24 +73,12 @@ const App = () => {
         setuser(user);
         setControlButtons(controlButtonsContent);
         setAuthButton(<button onClick={handleClickSignOutButton}>Sign out</button>);
-        setCurrentScreen("placesscreen");
+        setCurrentScreen(<PlacesScreen />);
       }
       
     });
   }, []);
 
-
-  let currentScreenComponent = null;
-  switch (currentScreen) {
-    case "homescreen":
-        currentScreenComponent = <HomeScreen />;
-        break;
-    case "placesscreen":
-        currentScreenComponent = <PlacesScreen user={user} />;
-        break;
-    default:
-      currentScreenComponent = <HomeScreen />;
-  }
 
   
 
@@ -91,7 +90,7 @@ const App = () => {
     </div>
 
     <hr />
-    {currentScreenComponent}
+    {currentScreen}
 
     {authUi}
     

@@ -9,8 +9,8 @@ const PlacesScreen = (props) => {
 	const [newPlaces, setNewPlaces] = useState([]);
 	const getNewPlaces = async() => {
 		let placeList = [];
-		const placesRef = db.collection('places');
-		const snapshot = await placesRef.where('status', '==', 0).get();
+		const placesRef = db.collection('places').where('status', '==', 0);
+		const snapshot = await placesRef.get();
 		if (snapshot.empty) {
 			console.log('No matching documents.');
 			return;

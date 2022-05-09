@@ -10,6 +10,7 @@ const EditScreen = (props) => {
 
 	const [placeData, setPlaceData] = useState(props.place.data);
 	
+
 	const handleChange = (e) => {
 
 		let value = 0;
@@ -19,8 +20,21 @@ const EditScreen = (props) => {
 		} else {
 			value = e.target.value;
 		}
+
+		//console.log(e.target.name, value);
+
 		setPlaceData({...placeData, [e.target.name] : value });
 	}
+
+
+
+	const handleCheckChange = (e) => {
+		
+		console.log(e);
+
+		setPlaceData({...placeData, [e.target.name] : !placeData[e.target.name] });	
+	}
+
 
 
 	const handleSave = async(e) => {
@@ -54,7 +68,6 @@ const EditScreen = (props) => {
 		<section className="section content">
 			<div className="container-fluid">
 				<h1>Edit</h1>
-				<button onClick={props.handleClickPlacesButton}>Cancel</button>
 
 				<form onSubmit={handleSave}>
 
@@ -85,7 +98,7 @@ const EditScreen = (props) => {
 
 
 					<div class="field">
-						<label class="label">Status</label>
+						<label className="label">Status</label>
 						<div className="control">
 							<label className="radio">
 								<input
@@ -93,8 +106,7 @@ const EditScreen = (props) => {
 									name="status"
 									value={0}
 									checked={placeData.status === 0}
-									onChange={handleChange} />
-									<span className="tag is-dark">Draft</span>
+									onChange={handleChange} /> <span className="tag is-dark">Draft</span>
 							</label>
 							<label className="radio">
 								<input
@@ -102,8 +114,7 @@ const EditScreen = (props) => {
 									name="status"
 									value={1}
 									checked={placeData.status === 1}
-									onChange={handleChange} />
-									<span className="tag is-success">Live</span>
+									onChange={handleChange} /> <span className="tag is-success">Live</span>
 							</label>
 							<label className="radio">
 								<input
@@ -111,8 +122,7 @@ const EditScreen = (props) => {
 									name="status"
 									value={2}
 									checked={placeData.status === 2}
-									onChange={handleChange} />
-									<span className="tag is-warning">Flagged</span>
+									onChange={handleChange} /> <span className="tag is-warning">Flagged</span>
 							</label>
 							<label className="radio">
 								<input
@@ -120,17 +130,46 @@ const EditScreen = (props) => {
 									name="status"
 									value={3}
 									checked={placeData.status === 3}
-									onChange={handleChange} />
-									<span className="tag is-danger">Deleted</span>
+									onChange={handleChange} /> <span className="tag is-danger">Deleted</span>
 							</label>
 						</div>
 					</div>
 
-					<input class="button is-success" type="submit" value="Save" />
+
+
+
+					<div class="field">
+						<label className="label">Environment</label>
+						<label className="checkbox">
+							<input
+								type="checkbox"
+								name="indoor"
+								value="indoor"
+								checked={placeData.indoor}
+								onChange={handleCheckChange} /> Indoor
+						</label>
+						<br />
+						<label className="checkbox">
+							<input
+								type="checkbox"
+								name="outdoor"
+								value="outdoor"
+								checked={placeData.outdoor}
+								onChange={handleCheckChange} /> Outdoor
+						</label>
+					</div>
+
+
+
+
+					<hr />
+
+					<input class="button is-success" type="submit" value="Save" /> 
+					<button class="button is-danger is-inverted" onClick={props.handleClickPlacesButton}>Cancel</button>
 
 				</form>
 
-				<hr />
+				
 
 			</div>
 		</section>

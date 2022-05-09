@@ -88,7 +88,6 @@ const App = () => {
         setuser(user);
         setControlButtons(controlButtonsContent);
         setAuthButton(signOutButtonContent);
-        setCurrentScreen(<PlacesScreen />);
       }
       
     });

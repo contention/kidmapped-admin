@@ -5,6 +5,9 @@ import 'firebase/compat/auth';
 import { auth } from './lib/firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
+//CSS
+import './css/App.css';
+
 //Screens
 import HomeScreen from './screens/homescreen';
 import PlacesScreen from './screens/placesscreen';
@@ -22,34 +25,49 @@ const uiConfig = {
 
 const App = () => {
 
-  let handleClickHomeButton = () => {
+  const handleClickHomeButton = () => {
     setCurrentScreen(<HomeScreen />);
   }
 
-  let handleClickEditButton = (place) => {
-    setCurrentScreen(<EditScreen place={place} />);
-  }
-
-  let handleClickPlacesButton = () => {
+  const handleClickPlacesButton = () => {
     setCurrentScreen(<PlacesScreen handleClickEditButton={handleClickEditButton} />);
   }
 
-  let handleClickSignInButton = () => {
+  const handleClickEditButton = (place) => {
+    setCurrentScreen(<EditScreen place={place} handleClickPlacesButton={handleClickPlacesButton} />);
+  }
+
+  const handleClickSignInButton = () => {
     setAuthUi(<StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />)
   }
 
-  let handleClickSignOutButton = () => {
+  const handleClickSignOutButton = () => {
     firebase.auth().signOut();
     setuser(null);
     setCurrentScreen(<HomeScreen />);
   }
 
+
+  
+  const homeButtonContent = <button className="button" onClick={handleClickHomeButton}>Home</button>;
+
+  const signInButtonContent = <button className="button is-success" onClick={handleClickSignInButton}>Sign in</button>;
+
+  const signOutButtonContent = <button className="button is-danger" onClick={handleClickSignOutButton}>Sign out</button>;
+
+  const controlButtonsContent = 
+      <span>
+        <button className="button" onClick={handleClickPlacesButton}>Places</button>
+      </span>;
+
+
+
   //State
-  const [currentScreen, setCurrentScreen] = useState("homescreen");
+  const [currentScreen, setCurrentScreen] = useState(<HomeScreen />);
 
-  const [homeButton, setHomeButton] = useState(<button onClick={handleClickHomeButton}>Home</button>);
+  const [homeButton, setHomeButton] = useState(homeButtonContent);
 
-  const [authButton, setAuthButton] = useState(<button onClick={handleClickSignInButton}>Sign in</button>);
+  const [authButton, setAuthButton] = useState(signInButtonContent);
 
   const [controlButtons, setControlButtons] = useState(null);
 
@@ -57,10 +75,7 @@ const App = () => {
 
   const [user, setuser] = useState(null);
 
-  let controlButtonsContent = 
-      <span>
-        <button onClick={handleClickPlacesButton}>Places</button>
-      </span>;
+  
 
 
   useEffect(() => {
@@ -68,11 +83,11 @@ const App = () => {
       
       if (user === null) {
         setControlButtons(null);
-        setAuthButton(<button onClick={handleClickSignInButton}>Sign in</button>);
+        setAuthButton(signInButtonContent);
       } else {
         setuser(user);
         setControlButtons(controlButtonsContent);
-        setAuthButton(<button onClick={handleClickSignOutButton}>Sign out</button>);
+        setAuthButton(signOutButtonContent);
         setCurrentScreen(<PlacesScreen />);
       }
       
@@ -85,11 +100,29 @@ const App = () => {
   return (
   <div>
 
-    <div>
-      {homeButton} {controlButtons} {authButton}
-    </div>
+    <nav className="navbar is-dark" role="navigation" aria-label="main navigation">
+    	<div className="navbar-brand">
+        	KM
+      	</div>
+      	<div className="navbar-menu">
 
-    <hr />
+		  	<div className="navbar-start">
+			  	<div className="buttons">
+				  	{homeButton}
+					{controlButtons}
+				</div>
+			</div>
+
+			<div className="navbar-end">
+			  	<div className="buttons">
+				  	{authButton}
+				</div>
+			</div>
+       
+    	</div>
+    </nav>
+
+
     {currentScreen}
 
     {authUi}

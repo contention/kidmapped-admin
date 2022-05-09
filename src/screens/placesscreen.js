@@ -2,91 +2,101 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../lib/firebase';
 
 import PlaceListItem from '../components/placelistitem';
-import PlaceEditPanel from './editscreen';
 
 const PlacesScreen = (props) => {
 
-  console.log('placesscreen', props);
+	//New places
+	const [newPlaces, setNewPlaces] = useState([]);
+	const getNewPlaces = async() => {
+		let placeList = [];
+		const placesRef = db.collection('places');
+		const snapshot = await placesRef.where('status', '==', 0).get();
+		if (snapshot.empty) {
+			console.log('No matching documents.');
+			return;
+		}
+		snapshot.forEach(doc => {
+			let place = {}
+			place.data = doc.data();
+			place.id = doc.id;
+			placeList.push(place);
+		});
+		setNewPlaces(placeList);
+	}
 
 
-  //Place Edit Panel
-  const [placeEditPanel, setPlaceEditPanel] = useState(null);
-  const [placeEditPanelCloseButton, setPlaceEditPanelCloseButton] = useState(null);
-
-  let closePlaceEditPanel = () => {
-    setPlaceEditPanel(null);
-    setPlaceEditPanelCloseButton(null)
-    
-  }
-
-  let showPlaceEditPanel = (place, user, hidePlaceEditPanel) => {
-    setPlaceEditPanel(<PlaceEditPanel place={place} user={user}/>);
-    setPlaceEditPanelCloseButton(<button onClick={closePlaceEditPanel}>Close</button>);
-  }
-
-  
-   
-  //Places
-  let placeList = [];
-  const [places, setPlaces] = useState([]);
-
-
-  //Get new place
-  let getNewPlaces = async() => {
-    const placesRef = db.collection('places');
-    const snapshot = await placesRef.where('status', '==', 1).get();
-    if (snapshot.empty) {
-      console.log('No matching documents.');
-      return;
-    }
-    snapshot.forEach(doc => {
-      let place = {}
-      place.data = doc.data();
-      place.id = doc.id;
-      placeList.push(place);
-    });
-    setPlaces(placeList);
-  }
-
-
-  //Get all sections
-  let getAll = () => {
-    getNewPlaces();
-  }
-
-
-  //On mount
-  useEffect(() => {
-    getAll();
-  }, []);
+	//Problem places
+	const [problemPlaces, setProblemPlaces] = useState([]);
+	const getProblemPlaces = async() => {
+		let placeList = [];
+		const placesRef = db.collection('places');
+		const snapshot = await placesRef.get();
+		if (snapshot.empty) {
+			console.log('No matching documents.');
+			return;
+		}
+		snapshot.forEach(doc => {
+			let place = {}
+			place.data = doc.data();
+			place.id = doc.id;
+			placeList.push(place);
+		});
+		setProblemPlaces(placeList);
+	}
 
 
 
-
-  return (
-    <div>
-
-      <div>
-      {placeEditPanelCloseButton}
-      {placeEditPanel}
-      </div>
+	//Get all sections
+	let getAll = () => {
+		getNewPlaces();
+		getProblemPlaces();
+	}
 
 
-      <h1>Places</h1> 
+	//On mount
+	useEffect(() => {
+		getAll();
+	}, []);
 
-      <h2>New</h2>
-      <ul>
-      {places.map(function(place, i){
-         return (
-          <li key={i} >
-          <PlaceListItem place={place} user={props.user} handleClickEditButton={props.handleClickEditButton} />
-          <button onClick={() => props.handleClickEditButton(place)}>Edit</button>
-          </li>
-         )
-       })}
-      </ul>
-    </div>
-  );
+
+
+	return (
+		<section className="section content">
+			<div className="container-fluid">
+
+			<div className="columns">
+
+				<div className="column">
+					<h2>Draft</h2>
+					<ul className="placeListItems">
+					{newPlaces.map(function(place, i){
+						return (
+							<PlaceListItem place={place} handleClickEditButton={props.handleClickEditButton} />
+						)
+					})}
+					</ul>
+				</div>
+
+
+				<div class="column">
+					<h2>Problem</h2>
+					<ul className="placeListItems">
+					{problemPlaces.map(function(place, i){
+						return (
+							<PlaceListItem place={place} handleClickEditButton={props.handleClickEditButton} />
+						)
+					})}
+					</ul>
+				</div>
+
+
+			</div>
+	
+
+
+			 </div>
+		</section>
+	);
 }
 
 export default PlacesScreen;

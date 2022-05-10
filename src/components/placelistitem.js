@@ -5,7 +5,7 @@ import PlaceStatusIndicator from './placeStatusIndicator';
 const PlaceListItem = (props) => {
 
 	return (
-		<li className="placeListItem" key={props.place.id} >
+		<li className="placeListItem">
 			<div className="columns">
 				<div className="column">
 				<strong>{props.place.data.name}</strong> <PlaceStatusIndicator status={props.place.data.status} />

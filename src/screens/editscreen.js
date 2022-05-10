@@ -8,7 +8,14 @@ import { db } from '../lib/firebase';
 
 const EditScreen = (props) => {
 
-	const [placeData, setPlaceData] = useState(props.place.data);
+	let initialPlaceData = {};
+
+	if (typeof props.place == 'undefined') {
+	} else {
+		initialPlaceData = props.place.data;
+	}
+
+	const [placeData, setPlaceData] = useState(initialPlaceData);
 	
 
 	const handleChange = (e) => {
@@ -58,7 +65,7 @@ const EditScreen = (props) => {
 
 	//On mount
 	useEffect(() => {
-		setPlaceData(props.place.data);
+		setPlaceData(initialPlaceData);
 	}, [props]);
 
 
@@ -72,8 +79,8 @@ const EditScreen = (props) => {
 				<form onSubmit={handleSave}>
 
 					<div className="field">
-						<label class="label">Name</label>
-						<div class="control">
+						<label className="label">Name</label>
+						<div className="control">
 							<input
 								className="input"
 								type="text" 
@@ -84,11 +91,11 @@ const EditScreen = (props) => {
 						</div>
 					</div>
 
-					<div class="field">
-						<label class="label">Description</label>
-						<div class="control">
+					<div className="field">
+						<label className="label">Description</label>
+						<div className="control">
 							<textarea
-								class="textarea"
+								className="textarea"
 								name="description"
 								value={placeData.description}
 								onChange={handleChange}
@@ -98,7 +105,7 @@ const EditScreen = (props) => {
 
 					<hr />
 
-					<div class="field">
+					<div className="field">
 						<label className="label">Status</label>
 						<div className="control">
 							<label className="radio">
@@ -138,7 +145,7 @@ const EditScreen = (props) => {
 
 					<hr />
 
-					<div class="field">
+					<div className="field">
 						<label className="label">Environment</label>
 						<label className="checkbox">
 							<input
@@ -162,7 +169,7 @@ const EditScreen = (props) => {
 					<hr />
 
 
-					<div class="field">
+					<div className="field">
 						<label className="label">Cost</label>
 						<label className="checkbox">
 							<input
@@ -185,11 +192,11 @@ const EditScreen = (props) => {
 
 					<hr />
 
-					<div class="field">
-						<label class="label">Opening times</label>
-						<div class="control">
+					<div className="field">
+						<label className="label">Opening times</label>
+						<div className="control">
 							<textarea
-								class="textarea"
+								className="textarea"
 								name="openingTimes"
 								value={placeData.openingTimes}
 								onChange={handleChange}
@@ -199,11 +206,11 @@ const EditScreen = (props) => {
 
 					<hr />
 
-					<div class="field">
-						<label class="label">Address</label>
-						<div class="control">
+					<div className="field">
+						<label className="label">Address</label>
+						<div className="control">
 							<textarea
-								class="textarea"
+								className="textarea"
 								name="address"
 								value={placeData.address}
 								onChange={handleChange}
@@ -212,8 +219,8 @@ const EditScreen = (props) => {
 					</div>
 
 					<div className="field">
-						<label class="label">Phone</label>
-						<div class="control">
+						<label className="label">Phone</label>
+						<div className="control">
 							<input
 								className="input"
 								type="text" 
@@ -225,8 +232,8 @@ const EditScreen = (props) => {
 					</div>
 
 					<div className="field">
-						<label class="label">Email</label>
-						<div class="control">
+						<label className="label">Email</label>
+						<div className="control">
 							<input
 								className="input"
 								type="text" 
@@ -238,8 +245,8 @@ const EditScreen = (props) => {
 					</div>
 
 					<div className="field">
-						<label class="label">URL</label>
-						<div class="control">
+						<label className="label">URL</label>
+						<div className="control">
 							<input
 								className="input"
 								type="text" 
@@ -255,8 +262,8 @@ const EditScreen = (props) => {
 
 					<hr />
 
-					<input class="button is-success" type="submit" value="Save" /> 
-					<button class="button is-danger is-inverted" onClick={props.handleClickPlacesButton}>Cancel</button>
+					<input className="button is-success" type="submit" value="Save" /> 
+					<button className="button is-danger is-inverted" onClick={props.handleClickPlacesButton}>Cancel</button>
 
 				</form>
 

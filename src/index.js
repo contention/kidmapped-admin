@@ -37,6 +37,10 @@ const App = () => {
     setCurrentScreen(<EditScreen place={place} handleClickPlacesButton={handleClickPlacesButton} />);
   }
 
+  const handleCreateButton = () => {
+    setCurrentScreen(<EditScreen handleClickPlacesButton={handleClickPlacesButton} />);
+  }
+
   const handleClickSignInButton = () => {
     setAuthUi(<StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />)
   }
@@ -58,6 +62,7 @@ const App = () => {
   const controlButtonsContent = 
       <span>
         <button className="button" onClick={handleClickPlacesButton}>Places</button>
+        <button className="button" onClick={handleCreateButton}>Create</button>
       </span>;
 
 

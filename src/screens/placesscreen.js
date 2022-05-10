@@ -71,19 +71,19 @@ const PlacesScreen = (props) => {
 					<ul className="placeListItems">
 					{newPlaces.map(function(place, i){
 						return (
-							<PlaceListItem place={place} handleClickEditButton={props.handleClickEditButton} />
+							<PlaceListItem key={i} place={place} handleClickEditButton={props.handleClickEditButton} />
 						)
 					})}
 					</ul>
 				</div>
 
 
-				<div class="column">
+				<div className="column">
 					<h2>Problem</h2>
 					<ul className="placeListItems">
 					{problemPlaces.map(function(place, i){
 						return (
-							<PlaceListItem place={place} handleClickEditButton={props.handleClickEditButton} />
+							<PlaceListItem key={i} place={place} handleClickEditButton={props.handleClickEditButton} />
 						)
 					})}
 					</ul>

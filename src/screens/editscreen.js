@@ -16,6 +16,7 @@ const EditScreen = (props) => {
 	}
 
 	const [placeData, setPlaceData] = useState(initialPlaceData);
+	const [user, setUser] = useState(null);
 	
 
 	const handleChange = (e) => {
@@ -52,13 +53,33 @@ const EditScreen = (props) => {
 
 		placeDataToSave.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
 
-		await db.collection('places').doc(props.place.id).set(placeDataToSave)
-		.then(() => {
-			console.log('Saved');
-		})
-		.catch(error => {
-				console.log(error);
-		});
+		if (typeof props.place !== 'undefined') {
+			await db.collection('places').doc(props.place.id).set(placeDataToSave)
+			.then(() => {
+				console.log('Saved');
+			})
+			.catch(error => {
+					console.log(error);
+			});
+		} else {
+
+			//Spoofing
+			placeDataToSave.latitude = 55;
+			placeDataToSave.longitude = -2;
+			placeDataToSave.geohash = 'iowiueriuw';
+
+			placeDataToSave.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+			placeDataToSave.uid = user.uid;
+
+			try {
+				const result = await db.collection('places').add(placeDataToSave);
+				console.log('Added document with ID: ', result.id);
+			} catch (e) {
+				console.log(e);
+			}			  
+			
+		}
+		
 
 	}
 
@@ -66,6 +87,17 @@ const EditScreen = (props) => {
 	//On mount
 	useEffect(() => {
 		setPlaceData(initialPlaceData);
+
+		const authListener = firebase.auth().onAuthStateChanged(function(user) {
+      
+			if (user === null) {
+			} else {
+			  setUser(user);
+			}
+			
+		  });
+
+
 	}, [props]);
 
 

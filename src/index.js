@@ -34,11 +34,11 @@ const App = () => {
   }
 
   const handleClickEditButton = (place) => {
-    setCurrentScreen(<EditScreen place={place} handleClickPlacesButton={handleClickPlacesButton} />);
+    setCurrentScreen(<EditScreen place={place} handleClickPlacesButton={handleClickPlacesButton} user={user} />);
   }
 
   const handleCreateButton = () => {
-    setCurrentScreen(<EditScreen handleClickPlacesButton={handleClickPlacesButton} />);
+    setCurrentScreen(<EditScreen handleClickPlacesButton={handleClickPlacesButton} user={user} />);
   }
 
   const handleClickSignInButton = () => {
@@ -47,7 +47,7 @@ const App = () => {
 
   const handleClickSignOutButton = () => {
     firebase.auth().signOut();
-    setuser(null);
+    setUser(null);
     setCurrentScreen(<HomeScreen />);
   }
 
@@ -78,7 +78,7 @@ const App = () => {
 
   const [authUi, setAuthUi] = useState(null);
 
-  const [user, setuser] = useState(null);
+  const [user, setUser] = useState(null);
 
   
 
@@ -90,7 +90,7 @@ const App = () => {
         setControlButtons(null);
         setAuthButton(signInButtonContent);
       } else {
-        setuser(user);
+        setUser(user);
         setControlButtons(controlButtonsContent);
         setAuthButton(signOutButtonContent);
       }

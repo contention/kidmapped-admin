@@ -34,11 +34,11 @@ const App = () => {
   }
 
   const handleClickEditButton = (place) => {
-    setCurrentScreen(<EditScreen place={place} handleClickPlacesButton={handleClickPlacesButton} user={user} />);
+    setCurrentScreen(<EditScreen handleClickPlacesButton={handleClickPlacesButton} place={place} user={user} initialAction="edit" />);
   }
 
   const handleCreateButton = () => {
-    setCurrentScreen(<EditScreen handleClickPlacesButton={handleClickPlacesButton} user={user} />);
+    setCurrentScreen(<EditScreen handleClickPlacesButton={handleClickPlacesButton} place={null} user={user} initialAction="create" />);
   }
 
   const handleClickSignInButton = () => {

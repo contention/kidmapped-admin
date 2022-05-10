@@ -1,27 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
+import GoogleMapReact from 'google-map-react';
 import { db } from '../lib/firebase';
-
-
 
 
 const EditScreen = (props) => {
 
+	console.log(props.initialAction);
+
 	let initialPlaceData = {};
 	let initialPlaceId = null;
 
-	console.log(typeof props.place);
-
-	if (typeof props.place === 'undefined') {
-	} else {
+	if (props.initialAction === 'edit') {
 		initialPlaceData = props.place.data;
 		initialPlaceId = props.place.id;
 	}
 
+	let testcenter = {};
+	testcenter.lat = 59.95;
+	testcenter.lng = 30.33;
+	const [center, setCenter] = useState(testcenter);
+	const [zoom, setZoom] = useState(11);
+	
+
 	const [placeData, setPlaceData] = useState(initialPlaceData);
 	const [placeId, setPlaceId] = useState(initialPlaceId);
 	const [user, setUser] = useState(null);
+	const [currentAction, setCurrentAction] = useState(props.initialAction);
 	
 
 	const handleChange = (e) => {
@@ -34,16 +40,12 @@ const EditScreen = (props) => {
 			value = e.target.value;
 		}
 
-		//console.log(e.target.name, value);
-
 		setPlaceData({...placeData, [e.target.name] : value });
 	}
 
 
 
 	const handleCheckChange = (e) => {
-		
-		console.log(e);
 
 		setPlaceData({...placeData, [e.target.name] : !placeData[e.target.name] });	
 	}
@@ -59,7 +61,7 @@ const EditScreen = (props) => {
 
 		placeDataToSave.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
 
-		if (placeId === null) {
+		if (currentAction === 'create') {
 			//Spoofing
 			placeDataToSave.latitude = 55;
 			placeDataToSave.longitude = -2;
@@ -72,11 +74,11 @@ const EditScreen = (props) => {
 				const result = await db.collection('places').add(placeDataToSave);
 				console.log('Added document with ID: ', result.id);
 				setPlaceId(result.id);
+				setCurrentAction("edit");
 			} catch (e) {
 				console.log(e);
 			}
 
-			
 		} else {
 			await db.collection('places').doc(placeId).set(placeDataToSave)
 			.then(() => {
@@ -94,6 +96,11 @@ const EditScreen = (props) => {
 
 	//On mount
 	useEffect(() => {
+
+		if (props.initialAction === "create") {
+			document.getElementById("placeForm").reset();
+		}
+
 		setPlaceData(initialPlaceData);
 
 		const authListener = firebase.auth().onAuthStateChanged(function(user) {
@@ -116,7 +123,8 @@ const EditScreen = (props) => {
 			<div className="container-fluid">
 				<h1>Editing: {placeData.name}</h1>
 
-				<form onSubmit={handleSave}>
+				<form id="placeForm" onSubmit={handleSave}>
+
 
 					<div className="field">
 						<label className="label">Name</label>
@@ -130,6 +138,19 @@ const EditScreen = (props) => {
 							/>
 						</div>
 					</div>
+
+					<hr />
+					<div style={{ height: '100vh', width: '100%' }}>
+						<GoogleMapReact
+						bootstrapURLKeys={{ key: "AIzaSyB7qj1yC5veS8CeTMVa3xDLJ4HMH4Z8vuM" }}
+						defaultCenter={center}
+						defaultZoom={zoom}
+						>
+						</GoogleMapReact>
+					</div>
+					<hr />
+
+
 
 					<div className="field">
 						<label className="label">Description</label>

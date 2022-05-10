@@ -67,7 +67,7 @@ const EditScreen = (props) => {
 	return (
 		<section className="section content">
 			<div className="container-fluid">
-				<h1>Edit</h1>
+				<h1>Editing: {placeData.name}</h1>
 
 				<form onSubmit={handleSave}>
 
@@ -96,6 +96,7 @@ const EditScreen = (props) => {
 						</div>
 					</div>
 
+					<hr />
 
 					<div class="field">
 						<label className="label">Status</label>
@@ -135,8 +136,7 @@ const EditScreen = (props) => {
 						</div>
 					</div>
 
-
-
+					<hr />
 
 					<div class="field">
 						<label className="label">Environment</label>
@@ -157,6 +157,97 @@ const EditScreen = (props) => {
 								checked={placeData.outdoor}
 								onChange={handleCheckChange} /> Outdoor
 						</label>
+					</div>
+
+					<hr />
+
+
+					<div class="field">
+						<label className="label">Cost</label>
+						<label className="checkbox">
+							<input
+								type="checkbox"
+								name="paid"
+								value="paid"
+								checked={placeData.paid}
+								onChange={handleCheckChange} /> Paid
+						</label>
+						<br />
+						<label className="checkbox">
+							<input
+								type="checkbox"
+								name="free"
+								value="free"
+								checked={placeData.free}
+								onChange={handleCheckChange} /> Free
+						</label>
+					</div>
+
+					<hr />
+
+					<div class="field">
+						<label class="label">Opening times</label>
+						<div class="control">
+							<textarea
+								class="textarea"
+								name="openingTimes"
+								value={placeData.openingTimes}
+								onChange={handleChange}
+							/>
+						</div>
+					</div>
+
+					<hr />
+
+					<div class="field">
+						<label class="label">Address</label>
+						<div class="control">
+							<textarea
+								class="textarea"
+								name="address"
+								value={placeData.address}
+								onChange={handleChange}
+							/>
+						</div>
+					</div>
+
+					<div className="field">
+						<label class="label">Phone</label>
+						<div class="control">
+							<input
+								className="input"
+								type="text" 
+								name="phone"
+								value={placeData.phone}
+								onChange={handleChange}
+							/>
+						</div>
+					</div>
+
+					<div className="field">
+						<label class="label">Email</label>
+						<div class="control">
+							<input
+								className="input"
+								type="text" 
+								name="email"
+								value={placeData.email}
+								onChange={handleChange}
+							/>
+						</div>
+					</div>
+
+					<div className="field">
+						<label class="label">URL</label>
+						<div class="control">
+							<input
+								className="input"
+								type="text" 
+								name="url"
+								value={placeData.url}
+								onChange={handleChange}
+							/>
+						</div>
 					</div>
 
 

@@ -12,7 +12,7 @@ const PlaceListItem = (props) => {
 					<br /><small>{props.place.data.description}</small>
 				</div>
 				<div className="column is-one-fifth">
-					<button className="button is-small is-pulled-right" onClick={() => props.handleClickEditButton(props.place)}>Edit</button>
+					<button className="button is-primary is-small is-pulled-right" onClick={() => props.handleClickEditButton(props.place)}>Edit</button>
 				</div>
 			</div>
 		</li>

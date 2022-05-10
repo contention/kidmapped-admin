@@ -9,13 +9,18 @@ import { db } from '../lib/firebase';
 const EditScreen = (props) => {
 
 	let initialPlaceData = {};
+	let initialPlaceId = null;
 
-	if (typeof props.place == 'undefined') {
+	console.log(typeof props.place);
+
+	if (typeof props.place === 'undefined') {
 	} else {
 		initialPlaceData = props.place.data;
+		initialPlaceId = props.place.id;
 	}
 
 	const [placeData, setPlaceData] = useState(initialPlaceData);
+	const [placeId, setPlaceId] = useState(initialPlaceId);
 	const [user, setUser] = useState(null);
 	
 
@@ -47,22 +52,14 @@ const EditScreen = (props) => {
 
 	const handleSave = async(e) => {
 		console.log('data to save:', placeData);
+		console.log('id to save:', placeId);
 		e.preventDefault();
 
 		let placeDataToSave = placeData;
 
 		placeDataToSave.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
 
-		if (typeof props.place !== 'undefined') {
-			await db.collection('places').doc(props.place.id).set(placeDataToSave)
-			.then(() => {
-				console.log('Saved');
-			})
-			.catch(error => {
-					console.log(error);
-			});
-		} else {
-
+		if (placeId === null) {
 			//Spoofing
 			placeDataToSave.latitude = 55;
 			placeDataToSave.longitude = -2;
@@ -74,10 +71,21 @@ const EditScreen = (props) => {
 			try {
 				const result = await db.collection('places').add(placeDataToSave);
 				console.log('Added document with ID: ', result.id);
+				setPlaceId(result.id);
 			} catch (e) {
 				console.log(e);
-			}			  
+			}
+
 			
+		} else {
+			await db.collection('places').doc(placeId).set(placeDataToSave)
+			.then(() => {
+				console.log('Saved');
+			})
+			.catch(error => {
+					console.log(error);
+			});
+						  
 		}
 		
 

@@ -16,3 +16,24 @@ li.placeListItem {
     padding-bottom:1rem;
     border-bottom: 1px dotted #999999;
 }
+
+.editMap {
+    height: 50vh;
+    width: 100%;
+    margin:0;
+    padding:0;
+    position:relative;
+}
+
+.centerMarker {
+    height:10px;
+    width:10px;
+    margin-top:-5px;
+    margin-left:-5px;
+    border-radius: 50%;
+    background-color: red;
+    position: absolute;
+    top:50%;
+    left:50%;
+    z-index: 999999;
+}

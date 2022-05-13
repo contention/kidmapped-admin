@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import GoogleMapReact from 'google-map-react';
+import geohash from "ngeohash";
 import { db } from '../lib/firebase';
 
 
@@ -65,11 +66,9 @@ const EditScreen = (props) => {
 		let placeDataToSave = placeData;
 
 		placeDataToSave.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+		placeDataToSave.geohash = geohash.encode(placeDataToSave.location.lat, placeDataToSave.location.lng);
 
 		if (placeId === null) {
-			//Spoofing
-			placeDataToSave.geohash = 'iowiueriuw';
-
 			placeDataToSave.createdAt = firebase.firestore.FieldValue.serverTimestamp();
 			placeDataToSave.uid = user.uid;
 
@@ -111,6 +110,21 @@ const EditScreen = (props) => {
 		});
 		
 	}
+
+
+	
+	const createMapOptions = (maps) => {
+		return {
+		  zoomControlOptions: {
+			position: maps.ControlPosition.RIGHT_BOTTOM,
+			style: maps.ZoomControlStyle.SMALL
+		  },
+		  mapTypeControlOptions: {
+			position: maps.ControlPosition.TOP_RIGHT
+		  },
+		  mapTypeControl: true
+		};
+	  }
 
 
 
@@ -170,14 +184,16 @@ const EditScreen = (props) => {
 					</div>
 
 					<hr />
-					<div style={{ height: '50vh', width: '100%' }}>
+					<div className="editMap">
+						<div className="centerMarker"></div>
 						<GoogleMapReact
 						bootstrapURLKeys={{ key: "AIzaSyB7qj1yC5veS8CeTMVa3xDLJ4HMH4Z8vuM" }}
 						defaultCenter={center}
 						defaultZoom={zoom}
+						options={createMapOptions}
 						onChange={handleMapChange}
-						>
-						</GoogleMapReact>
+						/>
+						
 					</div>
 					<hr />
 

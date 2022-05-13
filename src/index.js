@@ -30,14 +30,14 @@ const App = () => {
   }
 
   const handleClickPlacesButton = () => {
-    setCurrentScreen(<PlacesScreen handleClickEditButton={handleClickEditButton} />);
+    setCurrentScreen(<PlacesScreen handleClickEditButton={handleClickEditButton} handleClickCreateButton={handleClickCreateButton} />);
   }
 
   const handleClickEditButton = (place) => {
     setCurrentScreen(<EditScreen handleClickPlacesButton={handleClickPlacesButton} place={place} user={user} initialAction="edit" />);
   }
 
-  const handleCreateButton = () => {
+  const handleClickCreateButton = () => {
     setCurrentScreen(<EditScreen handleClickPlacesButton={handleClickPlacesButton} place={null} user={user} initialAction="create" />);
   }
 
@@ -62,7 +62,6 @@ const App = () => {
   const controlButtonsContent = 
       <span>
         <button className="button" onClick={handleClickPlacesButton}>Places</button>
-        <button className="button" onClick={handleCreateButton}>Create</button>
       </span>;
 
 

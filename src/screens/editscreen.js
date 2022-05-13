@@ -7,21 +7,22 @@ import { db } from '../lib/firebase';
 
 const EditScreen = (props) => {
 
-	console.log(props.initialAction);
-
 	let initialPlaceData = {};
 	let initialPlaceId = null;
+	let initialLocation = {};
+	initialLocation.lat = 55;
+	initialLocation.lng = -2;
 
-	if (props.initialAction === 'edit') {
+
+	if (props.place !== null) {
 		initialPlaceData = props.place.data;
 		initialPlaceId = props.place.id;
+		initialLocation = props.place.data.location;
 	}
 
-	let testcenter = {};
-	testcenter.lat = 59.95;
-	testcenter.lng = 30.33;
-	const [center, setCenter] = useState(testcenter);
-	const [zoom, setZoom] = useState(11);
+
+	const [center, setCenter] = useState(initialLocation);
+	const [zoom, setZoom] = useState(15);
 	
 
 	const [placeData, setPlaceData] = useState(initialPlaceData);
@@ -50,6 +51,10 @@ const EditScreen = (props) => {
 		setPlaceData({...placeData, [e.target.name] : !placeData[e.target.name] });	
 	}
 
+	const handleMapChange = (e) => {
+		setPlaceData({...placeData, location : e.center });
+	}
+
 
 
 	const handleSave = async(e) => {
@@ -61,10 +66,8 @@ const EditScreen = (props) => {
 
 		placeDataToSave.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
 
-		if (currentAction === 'create') {
+		if (placeId === null) {
 			//Spoofing
-			placeDataToSave.latitude = 55;
-			placeDataToSave.longitude = -2;
 			placeDataToSave.geohash = 'iowiueriuw';
 
 			placeDataToSave.createdAt = firebase.firestore.FieldValue.serverTimestamp();
@@ -94,8 +97,35 @@ const EditScreen = (props) => {
 	}
 
 
+
+	const getComments = async() => {
+		let placeList = [];
+		const commentsRef = db.collection('places').doc(placeId).collection('comments');
+		const snapshot = await commentsRef.get();
+		if (snapshot.empty) {
+			console.log('No matching documents.');
+			return;
+		}
+		snapshot.forEach(doc => {
+			console.log(doc.data());
+		});
+		
+	}
+
+
+
+
+
 	//On mount
 	useEffect(() => {
+
+
+		//getComments();
+
+
+
+
+
 
 		if (props.initialAction === "create") {
 			document.getElementById("placeForm").reset();
@@ -121,7 +151,7 @@ const EditScreen = (props) => {
 	return (
 		<section className="section content">
 			<div className="container-fluid">
-				<h1>Editing: {placeData.name}</h1>
+				<h1>{placeData.name}</h1>
 
 				<form id="placeForm" onSubmit={handleSave}>
 
@@ -140,11 +170,12 @@ const EditScreen = (props) => {
 					</div>
 
 					<hr />
-					<div style={{ height: '100vh', width: '100%' }}>
+					<div style={{ height: '50vh', width: '100%' }}>
 						<GoogleMapReact
 						bootstrapURLKeys={{ key: "AIzaSyB7qj1yC5veS8CeTMVa3xDLJ4HMH4Z8vuM" }}
 						defaultCenter={center}
 						defaultZoom={zoom}
+						onChange={handleMapChange}
 						>
 						</GoogleMapReact>
 					</div>

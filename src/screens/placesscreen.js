@@ -12,7 +12,7 @@ const PlacesScreen = (props) => {
 		const placesRef = db.collection('places').where('status', '==', 0);
 		const snapshot = await placesRef.get();
 		if (snapshot.empty) {
-			console.log('No matching documents.');
+			console.log('No matching places.');
 			return;
 		}
 		snapshot.forEach(doc => {
@@ -25,23 +25,24 @@ const PlacesScreen = (props) => {
 	}
 
 
-	//Problem places
-	const [problemPlaces, setProblemPlaces] = useState([]);
-	const getProblemPlaces = async() => {
-		let placeList = [];
-		const placesRef = db.collection('places');
-		const snapshot = await placesRef.get();
+	//New comments
+	const [newComments, setNewComments] = useState([]);
+	const getNewComments = async() => {
+		let commentList = [];
+		const commentsRef = db.collectionGroup('comments');
+		const snapshot = await commentsRef.get();
 		if (snapshot.empty) {
-			console.log('No matching documents.');
+			console.log('No matching comments.');
 			return;
 		}
 		snapshot.forEach(doc => {
-			let place = {}
-			place.data = doc.data();
-			place.id = doc.id;
-			placeList.push(place);
+			let comment = {}
+			comment.data = doc.data();
+			comment.id = doc.id;
+			commentList.push(comment);
+			console.log(commentList);
 		});
-		setProblemPlaces(placeList);
+		setNewComments(commentList);
 	}
 
 
@@ -49,7 +50,7 @@ const PlacesScreen = (props) => {
 	//Get all sections
 	let getAll = () => {
 		getNewPlaces();
-		getProblemPlaces();
+		getNewComments();
 	}
 
 
@@ -64,33 +65,66 @@ const PlacesScreen = (props) => {
 		<section className="section content">
 			<div className="container-fluid">
 
-			<div className="columns">
+				<div className="box">
 
-				<div className="column">
-					<h2>Draft</h2>
-					<ul className="placeListItems">
-					{newPlaces.map(function(place, i){
-						return (
-							<PlaceListItem key={i} place={place} handleClickEditButton={props.handleClickEditButton} />
-						)
-					})}
-					</ul>
+					<form className="form">
+						<div className="field is-grouped">
+							<div className="control is-expanded">
+								<input
+									className="input"
+									type="text"
+									placeholder="Search for a place"
+								/>
+							</div>
+							<div className="control">
+								<button className="button is-info">
+								Search
+								</button>
+							</div>
+							<div className="control">
+								<button className="button is-success" onClick={props.handleClickCreateButton}>Create</button>
+							</div>
+						</div>
+					</form>
+					
 				</div>
 
+				<div className="columns">
 
-				<div className="column">
-					<h2>Problem</h2>
-					<ul className="placeListItems">
-					{problemPlaces.map(function(place, i){
-						return (
-							<PlaceListItem key={i} place={place} handleClickEditButton={props.handleClickEditButton} />
-						)
-					})}
-					</ul>
+					<div className="column dottedBorderRight">
+						<h2 className="dottedBorderBottom">New places</h2>
+						<ul className="placeListItems">
+						{newPlaces.map(function(place, i){
+							return (
+								<PlaceListItem key={i} place={place} handleClickEditButton={props.handleClickEditButton} />
+							)
+						})}
+						</ul>
+					</div>
+
+
+					<div className="column dottedBorderRight">
+						<h2 className="dottedBorderBottom">New suggestions</h2>
+						<ul className="placeListItems">
+						
+						</ul>
+					</div>
+
+
+					<div className="column">
+						<h2 className="dottedBorderBottom">New comments</h2>
+						<ul className="placeListItems">
+						{newComments.map(function(comment, i){
+							return (
+								<div></div>
+								//<PlaceListItem key={i} place={comment} handleClickEditButton={props.handleClickEditButton} />
+							)
+						})}
+						</ul>
+					</div>
+
+
 				</div>
-
-
-			</div>
 	
 
 

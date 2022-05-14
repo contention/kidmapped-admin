@@ -1,8 +1,8 @@
-ul.placeListItems, .tabs ul {
+ul.placeListItems, ul.commentsList, .tabs ul {
     margin-left: 0 !important;
 }
 
-li.placeListItem {
+li.placeListItem, li.comment {
     list-style-type: none;
     padding: 1rem 0 1rem 0;
     border-bottom: 1px dotted #999999;

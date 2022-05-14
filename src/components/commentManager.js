@@ -7,8 +7,9 @@ const CommentManager = (props) => {
 
     let commentStatus = 0;
 
-    let draftView = {draftTabClassName: 'is-active', liveTabClassName: ''};
-    let liveView = {draftTabClassName: '', liveTabClassName: 'is-active'};
+    let draftView = {draftTabClassName: 'is-active', liveTabClassName: '', deletedTabClassName: ''};
+    let liveView = {draftTabClassName: '', liveTabClassName: 'is-active', deletedTabClassName: ''};
+    let deletedView = {draftTabClassName: '', liveTabClassName: '', deletedTabClassName: 'is-active'};
 
     const [viewStatus, setViewStatus] = useState(draftView);
     const [comments, setComments] = useState([]);
@@ -50,13 +51,41 @@ const CommentManager = (props) => {
         getComments(1);
       }
 
+      const handleClickDeletedButton = () => {
+        setViewStatus(deletedView);
+        getComments(2);
+      }
+
+    const handleClickChangeStatusButton = async(status, commentId) => {
+        
+        let commentDataToSave = {};
+
+        commentDataToSave.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+        commentDataToSave.status = status;
+
+        console.log(commentId, commentDataToSave);
+        
+        await db.collection('places').doc(props.placeId).collection('comments').doc(commentId).update(commentDataToSave)
+        .then(() => {
+            console.log('Saved');
+            getComments(commentStatus);
+        })
+        .catch(error => {
+                console.log(error);
+        });
+                            
+        
+            
+    
+        
+    }
+
 
 
     //On mount
 	useEffect(() => {
 		getComments(commentStatus);
 	}, []);
-
 
 
     let commentsUi =    <div class="notification is-warning">
@@ -73,13 +102,35 @@ const CommentManager = (props) => {
                 <li className={viewStatus.liveTabClassName}>
                     <a className="" onClick={handleClickLiveButton}>Live</a>
                 </li>
+                <li className={viewStatus.deletedTabClassName}>
+                    <a className="" onClick={handleClickDeletedButton}>Deleted</a>
+                </li>
             </ul>
             </div>
 
-            <ul>
+            <ul className="commentsList">
             {comments.map(function(comment, i){
                 return (
-                    <li key={i}>{comment.data.comment}</li>
+                    <li className="comment" key={i}>
+                        {comment.data.comment}
+                        <div class="field has-addons">
+                            <p class="control">
+                                <button class="button is-small" onClick={() =>  handleClickChangeStatusButton(0, comment.id)}>
+                                    Draft
+                                </button>
+                            </p>
+                            <p class="control">
+                                <button class="button is-small" onClick={() =>  handleClickChangeStatusButton(1, comment.id)}>
+                                    Live
+                                </button>
+                            </p>
+                            <p class="control">
+                                <button class="button is-small" onClick={() =>  handleClickChangeStatusButton(2, comment.id)}>
+                                    Deleted
+                                </button>
+                            </p>
+                        </div>
+                    </li>
                 )
             })}
             </ul>

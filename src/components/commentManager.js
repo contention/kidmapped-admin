@@ -15,6 +15,9 @@ const CommentManager = (props) => {
 
 
     const getComments = async(commentStatus) => {
+        if (props.placeId === null) {
+            return;
+        }
 		let commentList = [];
 		const commentsRef = db.collection('places').doc(props.placeId).collection('comments').where('status', '==', commentStatus);
 		const snapshot = await commentsRef.get();
@@ -56,10 +59,13 @@ const CommentManager = (props) => {
 
 
 
-    return (
-        <div className="box">
-            <h3>Comments</h3>
-            <div className="tabs">
+    let commentsUi =    <div class="notification is-warning">
+                            You need to save this place before you can add comments.
+                        </div>;
+
+    if (props.placeId !== null) {
+        commentsUi = <div>
+        <div className="tabs">
             <ul>
                 <li className={viewStatus.draftTabClassName}>
                     <a className="" onClick={handleClickDraftButton}>Draft</a>
@@ -70,7 +76,6 @@ const CommentManager = (props) => {
             </ul>
             </div>
 
-
             <ul>
             {comments.map(function(comment, i){
                 return (
@@ -78,8 +83,15 @@ const CommentManager = (props) => {
                 )
             })}
             </ul>
+        </div>
+    }
 
 
+
+    return (
+        <div className="box">
+            <h3>Comments</h3>
+            {commentsUi}
         </div>
     );
 

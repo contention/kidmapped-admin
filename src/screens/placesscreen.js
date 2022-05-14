@@ -63,7 +63,7 @@ const PlacesScreen = (props) => {
 
 
 	return (
-		<section className="section">
+		<section className="section content">
 			<div className="container-fluid">
 
 				<div className="box">

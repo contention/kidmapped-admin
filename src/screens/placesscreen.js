@@ -36,6 +36,7 @@ const PlacesScreen = (props) => {
 			return;
 		}
 		snapshot.forEach(doc => {
+			console.log('parent', doc.ref.parent.parent.id);
 			let comment = {}
 			comment.data = doc.data();
 			comment.id = doc.id;
@@ -62,7 +63,7 @@ const PlacesScreen = (props) => {
 
 
 	return (
-		<section className="section content">
+		<section className="section">
 			<div className="container-fluid">
 
 				<div className="box">
@@ -91,36 +92,43 @@ const PlacesScreen = (props) => {
 
 				<div className="columns">
 
-					<div className="column dottedBorderRight">
-						<h2 className="dottedBorderBottom">New places</h2>
-						<ul className="placeListItems">
-						{newPlaces.map(function(place, i){
-							return (
-								<PlaceListItem key={i} place={place} handleClickEditButton={props.handleClickEditButton} />
-							)
-						})}
-						</ul>
-					</div>
+					<div className="column">
 
-
-					<div className="column dottedBorderRight">
-						<h2 className="dottedBorderBottom">New suggestions</h2>
-						<ul className="placeListItems">
-						
-						</ul>
+						<div className="box">
+							<h2 className="dottedBorderBottom">New places</h2>
+							<ul className="placeListItems">
+							{newPlaces.map(function(place, i){
+								return (
+									<PlaceListItem key={i} place={place} handleClickEditButton={props.handleClickEditButton} />
+								)
+							})}
+							</ul>
+						</div>
 					</div>
 
 
 					<div className="column">
-						<h2 className="dottedBorderBottom">New comments</h2>
-						<ul className="placeListItems">
-						{newComments.map(function(comment, i){
-							return (
-								<div></div>
-								//<PlaceListItem key={i} place={comment} handleClickEditButton={props.handleClickEditButton} />
-							)
-						})}
-						</ul>
+						<div className="box">
+							<h2 className="dottedBorderBottom">New suggestions</h2>
+							<ul className="placeListItems">
+							
+							</ul>
+						</div>
+					</div>
+
+
+					<div className="column">
+						<div className="box">
+							<h2 className="dottedBorderBottom">New comments</h2>
+							<ul className="placeListItems">
+							{newComments.map(function(comment, i){
+								return (
+									<div></div>
+									//<PlaceListItem key={i} place={comment} handleClickEditButton={props.handleClickEditButton} />
+								)
+							})}
+							</ul>
+						</div>
 					</div>
 
 

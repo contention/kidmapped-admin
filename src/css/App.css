@@ -1,5 +1,5 @@
-ul.placeListItems {
-    margin-left: 0;
+ul.placeListItems, .tabs ul {
+    margin-left: 0 !important;
 }
 
 li.placeListItem {

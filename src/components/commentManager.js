@@ -5,31 +5,54 @@ import { db } from '../lib/firebase';
 
 const CommentManager = (props) => {
 
-    let draftView = {commentStatus: 0, draftTabClassName: 'is-active', liveTabClassName: ''};
-    let liveView = {commentStatus: 1, draftTabClassName: '', liveTabClassName: 'is-active'};
+    let commentStatus = 0;
+
+    let draftView = {draftTabClassName: 'is-active', liveTabClassName: ''};
+    let liveView = {draftTabClassName: '', liveTabClassName: 'is-active'};
 
     const [viewStatus, setViewStatus] = useState(draftView);
+    const [comments, setComments] = useState([]);
 
 
-    const getComments = async() => {
+    const getComments = async(commentStatus) => {
 		let commentList = [];
-		const commentsRef = db.collection('places').doc(props.placeId).collection('comments').where('status', '==', viewStatus.commentStatus);
+		const commentsRef = db.collection('places').doc(props.placeId).collection('comments').where('status', '==', commentStatus);
 		const snapshot = await commentsRef.get();
 		if (snapshot.empty) {
 			console.log('No matching comments.');
+            setComments(commentList);
 			return;
 		}
 		snapshot.forEach(doc => {
-			console.log(doc.data());
+			//console.log(doc.data());
+            let comment = {}
+			comment.data = doc.data();
+			comment.id = doc.id;
+			commentList.push(comment);
+			console.log(commentList);
 		});
+        setComments(commentList);
+        
 	}
+
+
+
+    const handleClickDraftButton = () => {
+        setViewStatus(draftView);
+        getComments(0);
+      }
+
+      const handleClickLiveButton = () => {
+        setViewStatus(liveView);
+        getComments(1);
+      }
 
 
 
     //On mount
 	useEffect(() => {
-		getComments();
-	}, [viewStatus.commentStatus]);
+		getComments(commentStatus);
+	}, []);
 
 
 
@@ -39,13 +62,24 @@ const CommentManager = (props) => {
             <div className="tabs">
             <ul>
                 <li className={viewStatus.draftTabClassName}>
-                    <a className="" onClick={() => setViewStatus(draftView)}>Draft</a>
+                    <a className="" onClick={handleClickDraftButton}>Draft</a>
                 </li>
                 <li className={viewStatus.liveTabClassName}>
-                    <a className="" onClick={() => setViewStatus(liveView)}>Live</a>
+                    <a className="" onClick={handleClickLiveButton}>Live</a>
                 </li>
             </ul>
             </div>
+
+
+            <ul>
+            {comments.map(function(comment, i){
+                return (
+                    <li key={i}>{comment.data.comment}</li>
+                )
+            })}
+            </ul>
+
+
         </div>
     );
 

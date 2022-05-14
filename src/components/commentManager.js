@@ -3,18 +3,28 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import { db } from '../lib/firebase';
 
+import CommentListItem from './commentListItem';
+
 const CommentManager = (props) => {
 
+    const [comment, setComment] = useState();
     const [comments, setComments] = useState([]);
+    const [user, setUser] = useState(null);
+
+    const [page, setPage] = useState(0);
 
 
 
-    const getDraftComments = async(commentStatus) => {
+    const getComments = async(commentStatus) => {
         if (props.placeId === null) {
             return;
         }
+
+        
+
+
 		let commentList = [];
-		const commentsRef = db.collection('places').doc(props.placeId).collection('comments').where('status', '==', 0);
+		const commentsRef = db.collection('places').doc(props.placeId).collection('comments').orderBy('createdAt','desc').limit(2);
 		const snapshot = await commentsRef.get();
 		if (snapshot.empty) {
 			console.log('No matching comments.');
@@ -34,61 +44,78 @@ const CommentManager = (props) => {
 	}
 
 
-    const handleClickChangeStatusButton = async(status, commentId) => {
-        
-        let commentDataToSave = {};
-        commentDataToSave.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
-        commentDataToSave.status = status;
+    const handleCommentChange = (e) => {
+		setComment(e.target.value);
+	}
 
-        console.log(commentId, commentDataToSave);
-        
-        await db.collection('places').doc(props.placeId).collection('comments').doc(commentId).update(commentDataToSave)
+    
+    const saveComment = async(e) => {
+        e.preventDefault();
+
+        let commentDataToSave = {};
+        commentDataToSave.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+        commentDataToSave.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+        commentDataToSave.status = 0;
+        commentDataToSave.uid = user.uid;
+        commentDataToSave.comment = comment;
+
+        console.log('commentDataToSave:', commentDataToSave);
+
+        await db.collection('places').doc(props.placeId).collection('comments').add(commentDataToSave)
         .then(() => {
+			getComments();
             console.log('Saved');
         })
         .catch(error => {
             console.log(error);
         });
     }
-
+    
 
 
     //On mount
 	useEffect(() => {
-		getDraftComments();
+		getComments();
+
+        const authListener = firebase.auth().onAuthStateChanged(function(user) {
+			if (user !== null) {
+			  setUser(user);
+			}
+		});
+
 	}, []);
 
 
     let commentsUi =    <div className="notification is-warning">
-                            You need to save this place before you can add comments.
+                            You need to save this place before you can manage comments.
                         </div>;
 
     if (props.placeId !== null) {
         commentsUi = <div>
 
+            <form onSubmit={saveComment}>
+            <div className="field">
+                <label className="label">Add a comment</label>
+                <div className="control">
+                    <textarea
+                        className="textarea"
+                        name="comment"
+                        onChange={handleCommentChange}
+                    />
+                </div>
+                <div className="control">
+                    <input className="button is-success" type="submit" value="Save" />
+                </div>
+            </div>
+
+
+            </form>
+
+
             <ul className="commentsList">
             {comments.map(function(comment, i){
                 return (
-                    <li className="comment" key={i}>
-                        {comment.data.comment}
-                        <div className="field has-addons">
-                            <p className="control">
-                                <button className="button is-small" onClick={() =>  handleClickChangeStatusButton(0, comment.id)}>
-                                    Draft
-                                </button>
-                            </p>
-                            <p className="control">
-                                <button className="button is-small" onClick={() =>  handleClickChangeStatusButton(1, comment.id)}>
-                                    Live
-                                </button>
-                            </p>
-                            <p className="control">
-                                <button className="button is-small" onClick={() =>  handleClickChangeStatusButton(2, comment.id)}>
-                                    Deleted
-                                </button>
-                            </p>
-                        </div>
-                    </li>
+                    <CommentListItem key={i} placeId={props.placeId} comment={comment}/>
                 )
             })}
             </ul>

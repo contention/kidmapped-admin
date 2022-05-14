@@ -34,11 +34,11 @@ const App = () => {
   }
 
   const handleClickEditButton = (place) => {
-    setCurrentScreen(<EditScreen handleClickPlacesButton={handleClickPlacesButton} place={place} user={user} initialAction="edit" />);
+    setCurrentScreen(<EditScreen handleClickPlacesButton={handleClickPlacesButton} place={place} />);
   }
 
   const handleClickCreateButton = () => {
-    setCurrentScreen(<EditScreen handleClickPlacesButton={handleClickPlacesButton} place={null} user={user} initialAction="create" />);
+    setCurrentScreen(<EditScreen handleClickPlacesButton={handleClickPlacesButton} place={null} />);
   }
 
   const handleClickSignInButton = () => {
@@ -85,6 +85,7 @@ const App = () => {
   useEffect(() => {
     const authListener = firebase.auth().onAuthStateChanged(function(user) {
       
+      console.log('indexjs user:', user);
       if (user === null) {
         setControlButtons(null);
         setAuthButton(signInButtonContent);

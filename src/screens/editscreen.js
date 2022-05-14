@@ -130,13 +130,10 @@ const EditScreen = (props) => {
 		setPlaceData(initialPlaceData);
 
 		const authListener = firebase.auth().onAuthStateChanged(function(user) {
-      
-			if (user === null) {
-			} else {
+			if (user !== null) {
 			  setUser(user);
 			}
-			
-		  });
+		});
 
 
 	}, [props]);

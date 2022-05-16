@@ -50,7 +50,6 @@ const CommentListItem = (props) => {
 	  }
 
 	  let displayDate = new Date(props.comment.data.createdAt.seconds*1000).toUTCString();
-	  console.log(displayDate);
 
 
 	return (

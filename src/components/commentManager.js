@@ -7,11 +7,14 @@ import CommentListItem from './commentListItem';
 
 const CommentManager = (props) => {
 
-    const [comment, setComment] = useState();
+    const [newComment, setNewComment] = useState(null);
+    const [lastComment, setLastComment] = useState(null);
     const [comments, setComments] = useState([]);
     const [user, setUser] = useState(null);
 
     const [page, setPage] = useState(0);
+    const [limit, setLimit] = useState(2);
+    const [pagingDirection, setPagingDirection] = useState(null);
 
 
 
@@ -21,31 +24,45 @@ const CommentManager = (props) => {
         }
 
         
+		let commentsRef = db.collection('places')
+                            .doc(props.placeId)
+                            .collection('comments')
+                            .orderBy('createdAt','desc')
+                            .limit(3);
 
-
-		let commentList = [];
-		const commentsRef = db.collection('places').doc(props.placeId).collection('comments').orderBy('createdAt','desc').limit(2);
+        if (lastComment !== null) {
+            commentsRef = commentsRef.startAfter(lastComment);
+        }
+        
 		const snapshot = await commentsRef.get();
 		if (snapshot.empty) {
 			console.log('No matching comments.');
-            setComments(commentList);
+            setComments(comments);
 			return;
 		}
+
+        setLastComment(snapshot.docs[snapshot.docs.length - 1]);
+
+        let commentsToAddToCommentList = [];
 		snapshot.forEach(doc => {
-			//console.log(doc.data());
             let comment = {}
 			comment.data = doc.data();
 			comment.id = doc.id;
-			commentList.push(comment);
-			console.log(commentList);
+			commentsToAddToCommentList.push(comment);
 		});
-        setComments(commentList);
+
+        
+        let updatedCommentsList = comments.concat(commentsToAddToCommentList);
+        console.log(comments,commentsToAddToCommentList, updatedCommentsList);
+
+        setComments(updatedCommentsList);
         
 	}
 
 
+
     const handleCommentChange = (e) => {
-		setComment(e.target.value);
+		setNewComment(e.target.value);
 	}
 
     
@@ -57,7 +74,7 @@ const CommentManager = (props) => {
         commentDataToSave.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
         commentDataToSave.status = 0;
         commentDataToSave.uid = user.uid;
-        commentDataToSave.comment = comment;
+        commentDataToSave.comment = newComment;
 
         console.log('commentDataToSave:', commentDataToSave);
 
@@ -119,6 +136,8 @@ const CommentManager = (props) => {
                 )
             })}
             </ul>
+
+            <button className="button" onClick={getComments}>More</button>
         </div>
     }
 

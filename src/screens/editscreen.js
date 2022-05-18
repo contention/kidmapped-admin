@@ -6,6 +6,8 @@ import geohash from "ngeohash";
 import { db } from '../lib/firebase';
 
 
+
+import ImageManager from '../components/imageManager';
 import CommentManager from '../components/commentManager';
 
 
@@ -367,6 +369,8 @@ const EditScreen = (props) => {
 
 
 					<div className="column">
+						<ImageManager placeId={placeId} />
+						<hr />
 						<CommentManager placeId={placeId} />
 					</div>
 

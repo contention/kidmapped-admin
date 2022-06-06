@@ -3,6 +3,7 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import { db } from '../lib/firebase';
 import { getStorage, ref, getDownloadURL, uploadBytes } from "firebase/storage";
+import { v4 as uuidv4 } from 'uuid';
 
 const ImageManager = (props) => {
 
@@ -90,18 +91,41 @@ const ImageManager = (props) => {
         e.preventDefault();
         console.log(e);
 
+        let imageUUID = uuidv4();
+
         console.log('uploading');
         const storage = getStorage();
-	    const uploadedImageRef = ref(storage, props.placeId + '/IMG_0940.jpeg');
+	    const uploadedImageRef = ref(storage, props.placeId + '/' + imageUUID + '.jpeg');
 
         const file = e.target[0].files[0];
         console.log(file);
 
         const fileData = await uploadBytes(uploadedImageRef, file);
+        console.log(fileData);
         const imageSrc = await getDownloadURL(uploadedImageRef);
         console.log(uploadedImageRef, imageSrc);
 
         //Now create entry in db.
+
+        let imageDataToSave = {};
+        imageDataToSave.src = imageSrc;
+        imageDataToSave.originalName = file.name;
+        imageDataToSave.type = file.type;
+        imageDataToSave.name = fileData.metadata.name;
+        imageDataToSave.bucket = fileData.metadata.bucket;
+        imageDataToSave.fullPath = fileData.metadata.fullPath;
+        imageDataToSave.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+        imageDataToSave.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+        imageDataToSave.uid = user.uid;
+
+        await db.collection('places').doc(props.placeId).collection('images').add(imageDataToSave)
+        .then(() => {
+			//getImages();
+            console.log('Saved');
+        })
+        .catch(error => {
+            console.log(error);
+        });
 
 
 
@@ -197,7 +221,7 @@ const ImageManager = (props) => {
             <ul className="commentsList">
             {comments.map(function(comment, i){
                 return (
-                    <div></div>//<CommentListItem key={i} placeId={props.placeId} comment={comment}/>
+                    <div key={i}></div>//<CommentListItem key={i} placeId={props.placeId} comment={comment}/>
                 )
             })}
             </ul>

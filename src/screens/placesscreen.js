@@ -123,7 +123,7 @@ const PlacesScreen = (props) => {
 							<ul className="placeListItems">
 							{newComments.map(function(comment, i){
 								return (
-									<div></div>
+									<div key={i}></div>
 									//<PlaceListItem key={i} place={comment} handleClickEditButton={props.handleClickEditButton} />
 								)
 							})}
